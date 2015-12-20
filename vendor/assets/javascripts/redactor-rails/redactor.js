@@ -7988,7 +7988,7 @@
 				// youtube & vimeo
 				if (convertVideoLinks && html)
 				{
-					var iframeStart = '<iframe width="100%" height="281" src="',
+					var iframeStart = '<iframe width="500" height="281" src="',
 						iframeEnd = '" frameborder="0" allowfullscreen></iframe>';
 
 					if (html.match(reUrlYoutube))
