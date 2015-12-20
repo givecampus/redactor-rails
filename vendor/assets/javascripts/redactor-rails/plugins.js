@@ -4,4 +4,3 @@
 //= require redactor-rails/plugins/fontsize
 //= require redactor-rails/plugins/fullscreen
 //= require redactor-rails/plugins/textdirection
-//= require redactor-rails/plugins/video
