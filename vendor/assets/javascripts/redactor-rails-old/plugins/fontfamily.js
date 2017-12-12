@@ -1,6 +1,8 @@
+if (!RedactorPlugins) var RedactorPlugins = {};
+
 (function($)
 {
-	$.Redactor.prototype.fontfamily = function()
+	RedactorPlugins.fontfamily = function()
 	{
 		return {
 			init: function ()
@@ -16,8 +18,7 @@
 
 				dropdown.remove = { title: 'Remove Font Family', func: that.fontfamily.reset };
 
-				var button = this.button.add('fontfamily', 'Font');
-				this.button.setIcon(button, '<i class="re-icon-fontfamily"></i>');
+				var button = this.button.add('fontfamily', 'Change Font Family');
 				this.button.addDropdown(button, dropdown);
 
 			},
