@@ -26,11 +26,11 @@ class RedactorRails::DocumentsController < ApplicationController
     file_counter = 0
 
     files.each do |file|
+      file_counter += 1
       @document = RedactorRails.document_model.new
       attach_document(file)
 
       if @document.save
-        file_counter += 1
         results["file-#{file_counter}"] = {
           id: SecureRandom.uuid,
           name: file.original_filename,

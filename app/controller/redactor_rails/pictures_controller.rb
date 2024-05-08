@@ -26,11 +26,11 @@ class RedactorRails::PicturesController < ApplicationController
     file_counter = 0
 
     files.each do |file|
+      file_counter += 1
       @picture = RedactorRails.picture_model.new
       attach_picture(file)
 
       if @picture.save
-        file_counter += 1
         results["file-#{file_counter}"] = {
           id: SecureRandom.uuid,
           url: @picture.url(:content)
