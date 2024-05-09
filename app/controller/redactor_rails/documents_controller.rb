@@ -8,14 +8,46 @@ class RedactorRails::DocumentsController < ApplicationController
   end
 
   def create
-    @document = RedactorRails.document_model.new
-
-    file = params[:file]
-    @document.data = RedactorRails::Http.normalize_param(file, request)
-    if @document.has_attribute?(:"#{RedactorRails.devise_user_key}")
-      @document.send("#{RedactorRails.devise_user}=", redactor_current_user)
-      @document.assetable = redactor_current_user
+    if params[:version_4].present?
+      # Redactor 4
+      process_version_4_document
+    else
+      # Legacy Redactor
+      process_version_2_document
     end
+
+  end
+
+  private
+
+  def process_version_4_document
+    files = params[:file]
+    results = {}
+    file_counter = 0
+
+    files.each do |file|
+      file_counter += 1
+      @document = RedactorRails.document_model.new
+      attach_document(file)
+
+      if @document.save
+        results["file-#{file_counter}"] = {
+          id: SecureRandom.uuid,
+          name: file.original_filename,
+          url: @document.url
+        }
+      end
+    end
+
+    render json: results
+  rescue StandardError => e
+    render json: { error: true, message: e.message }
+  end
+
+  def process_version_2_document
+    @document = RedactorRails.document_model.new
+    file = params[:file]
+    attach_document(file)
 
     if @document.save
       render json: { url: @document.url, filename: @document.filename }
@@ -24,7 +56,13 @@ class RedactorRails::DocumentsController < ApplicationController
     end
   end
 
-  private
+  def attach_document(file)
+    @document.data = RedactorRails::Http.normalize_param(file, request)
+    if @document.has_attribute?(:"#{RedactorRails.devise_user_key}")
+      @document.send("#{RedactorRails.devise_user}=", redactor_current_user)
+      @document.assetable = redactor_current_user
+    end
+  end
 
   def redactor_authenticate_user!
     if RedactorRails.document_model.new.has_attribute?(RedactorRails.devise_user)
